@@ -1,24 +1,24 @@
-// Dashboard.jsx
+// AdminDashboard.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/AdminDashboard.css';
 
-const  AdminDashboard = () => {
+const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeItem, setActiveItem] = useState('dashboard');
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'invoices', label: 'Invoices', icon: '📄' },
-    { id: 'customers', label: 'Customers', icon: '👥' },
-    { id: 'products', label: 'Products', icon: '📦' },
-    { id: 'reports', label: 'Reports', icon: '📈' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
+    { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/dashboard' },
+    { id: 'products', label: 'Products', icon: '📦', path: '/products' },
+    { id: 'invoices', label: 'Invoices', icon: '📄', path: '/invoices' },
+    { id: 'customers', label: 'Customers', icon: '👥', path: '/customers' },
+    { id: 'reports', label: 'Reports', icon: '📈', path: '/reports' },
+    { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
   ];
 
   const handleLogout = () => {
     alert('Logged out successfully!');
-    // Redirect to login
-    // window.location.href = '/login';
+    navigate('/login');
   };
 
   return (
@@ -47,8 +47,8 @@ const  AdminDashboard = () => {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              className={`nav-item ${activeItem === item.id ? 'active' : ''}`}
-              onClick={() => setActiveItem(item.id)}
+              className={`nav-item ${window.location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => navigate(item.path)}
             >
               <span className="nav-icon">{item.icon}</span>
               {isSidebarOpen && <span className="nav-label">{item.label}</span>}
@@ -70,7 +70,7 @@ const  AdminDashboard = () => {
         <header className="navbar">
           <div className="navbar-left">
             <h2 className="page-title">
-              {menuItems.find(item => item.id === activeItem)?.label || 'Dashboard'}
+              {menuItems.find(item => item.path === window.location.pathname)?.label || 'Dashboard'}
             </h2>
           </div>
           <div className="navbar-right">
@@ -83,7 +83,7 @@ const  AdminDashboard = () => {
             </button>
             <div className="user-profile">
               <div className="avatar">
-                <span>JD</span>
+                <span>AZ</span>
               </div>
               <div className="user-info">
                 <span className="user-name">Ankita Zade</span>
@@ -93,14 +93,13 @@ const  AdminDashboard = () => {
           </div>
         </header>
 
-        {/* Page Body */}
+        {/* Page Body - Dashboard Content */}
         <div className="page-body">
           <div className="welcome-section">
             <h1>Welcome back, Ankita! 👋</h1>
             <p>Here's what's happening with your business today.</p>
           </div>
 
-          {/* Stats Cards */}
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon purple">💰</div>
@@ -136,7 +135,6 @@ const  AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Recent Activity */}
           <div className="recent-activity">
             <h3>Recent Activity</h3>
             <div className="activity-list">
