@@ -1,20 +1,17 @@
-import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/login';
-import MobileApp from './pages/AdminDashboard';
-
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
-
   return (
-    <>
-    {/* <Login/> */}
-    {/* <AdminDashboard/>
-     */}
-
-     <MobileApp/>
-
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
