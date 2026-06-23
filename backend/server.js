@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("BillSync Backend Running");
 });
 
-app.use("/api/users", require("./routes/user.route"));
+// app.use("/api/users", require("./routes/user.route"));
 
 const sql = require("./database/db");
 
