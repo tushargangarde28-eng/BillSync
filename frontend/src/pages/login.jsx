@@ -12,36 +12,31 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  setError('');
-  setIsLoading(true);
-
-  if (!username || !password) {
-    setError('Please fill in all fields');
-    setIsLoading(false);
-    return;
-  }
 
   try {
-    const res = await axios.post("http://localhost:5000/api/users/login", {
-      username,
-      password
-    });
+    const res = await axios.post(
+      "http://localhost:5000/api/users/login",
+      {
+        username,
+        password,
+      }
+    );
 
-    if (res.data.success) {
-      localStorage.setItem("token", res.data.token);
-      navigate("/AdminDashboard");
-    } else {
-      setError(res.data.message || "Login failed");
-    }
+    console.log("Response:", res);
+
+    localStorage.setItem("userId", res.data.userId);
+
+window.location.href = "/AdminDashboard";
 
   } catch (err) {
-    setError(err.response?.data?.message || "Server error");
-  } finally {
-    setIsLoading(false);
+    console.error("Login Error:", err);
+
+    setError(err.response?.data?.error || "Server Error");
   }
 };
+
   return (
     <div className="login-wrapper">
       <div className="login-container">
@@ -112,9 +107,9 @@ const Login = () => {
               </label>
             </div>
 
-            <button type="submit" className="login-btn" disabled={isLoading}>
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </button>
+<button type="submit" className="login-btn" disabled={isLoading}>
+  {isLoading ? "Signing in..." : "Sign In"}
+</button>
           </form>
 
           <div className="footer-links">
