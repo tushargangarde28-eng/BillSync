@@ -1,6 +1,6 @@
 require("dotenv").config();
-
 const express = require("express");
+const userRoutes = require("./routes/user.route");
 const cors = require("cors");
 
 const app = express();
@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("BillSync Backend Running");
 });
 
-app.use("/api/users", require("./routes/user.route"));
+app.use("/api/users", userRoutes);
 
 const sql = require("./database/db");
 
