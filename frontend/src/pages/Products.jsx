@@ -3,11 +3,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/product.css';
 
-const product = () => {
+const Products = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Categories list
+  const categories = ['All', 'Veg', 'Non-Veg', 'Thali', 'Drink', 'Snacks'];
 
   // Form state for add/edit
   const [formData, setFormData] = useState({
@@ -22,27 +27,51 @@ const product = () => {
   const [products, setProducts] = useState([
     {
       id: 1,
-      name: 'Laptop Pro X',
-      category: 'Electronics',
-      price: '$1,299',
+      name: 'Paneer Butter Masala',
+      category: 'Veg',
+      price: '$12.99',
       stock: 45,
-      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop'
+      image: 'https://images.unsplash.com/photo-1633945274405-b6cbf904b382?w=300&h=300&fit=crop'
     },
     {
       id: 2,
-      name: 'Wireless Headphones',
-      category: 'Audio',
-      price: '$199',
+      name: 'Chicken Biryani',
+      category: 'Non-Veg',
+      price: '$15.99',
       stock: 78,
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop'
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&h=300&fit=crop'
     },
     {
       id: 3,
-      name: 'Smart Watch',
-      category: 'Wearables',
-      price: '$349',
+      name: 'Veg Thali',
+      category: 'Thali',
+      price: '$18.99',
       stock: 23,
-      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop'
+      image: 'https://images.unsplash.com/photo-1546833998-877b37c2e5c2?w=300&h=300&fit=crop'
+    },
+    {
+      id: 4,
+      name: 'Mango Smoothie',
+      category: 'Drink',
+      price: '$5.99',
+      stock: 56,
+      image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=300&h=300&fit=crop'
+    },
+    {
+      id: 5,
+      name: 'French Fries',
+      category: 'Snacks',
+      price: '$4.99',
+      stock: 89,
+      image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&h=300&fit=crop'
+    },
+    {
+      id: 6,
+      name: 'Butter Chicken',
+      category: 'Non-Veg',
+      price: '$16.99',
+      stock: 34,
+      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=300&h=300&fit=crop'
     }
   ]);
 
@@ -54,6 +83,14 @@ const product = () => {
     { id: 'reports', label: 'Reports', icon: '📈', path: '/reports' },
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
   ];
+
+  // Filter products based on search and category
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -83,7 +120,7 @@ const product = () => {
     const newProduct = {
       id: products.length + 1,
       name: formData.name,
-      category: formData.category || 'General',
+      category: formData.category || 'Veg',
       price: formData.price.startsWith('$') ? formData.price : `$${formData.price}`,
       stock: parseInt(formData.stock) || 0,
       image: formData.image || 'https://via.placeholder.com/300x300/7c3aed/ffffff?text=Product'
@@ -119,7 +156,7 @@ const product = () => {
       product.id === editingProduct.id ? {
         ...product,
         name: formData.name,
-        category: formData.category || 'General',
+        category: formData.category || 'Veg',
         price: formData.price.startsWith('$') ? formData.price : `$${formData.price}`,
         stock: parseInt(formData.stock) || 0,
         image: formData.image || product.image
@@ -237,37 +274,80 @@ const product = () => {
         {/* Page Body - Products Content */}
         <div className="page-body">
           <div className="products-page">
-            <div className="products-header">
-              <h1>Products</h1>
-              <button className="add-product-btn" onClick={() => setShowAddModal(true)}>
-                + Add New Product
-              </button>
+            {/* Search Bar with Add Button */}
+            <div className="search-container">
+              <div className="search-wrapper">
+                <span className="search-icon">🔍</span>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search products by name or category..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button 
+                    className="clear-search"
+                    onClick={() => setSearchTerm('')}
+                  >
+                    ✕
+                  </button>
+                )}
+                <button 
+                  className="add-product-btn"
+                  onClick={() => setShowAddModal(true)}
+                >
+                  + Add Product
+                </button>
+              </div>
+            </div>
+
+            {/* Categories */}
+            <div className="categories-container">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
             
+            {/* Products Grid */}
             <div className="products-grid">
-              {products.map((product) => (
-                <div key={product.id} className="product-card">
-                  <div className="product-image">
-                    <img src={product.image} alt={product.name} />
-                  </div>
-                  <div className="product-details">
-                    <h4>{product.name}</h4>
-                    <p className="product-category">{product.category}</p>
-                    <div className="product-meta">
-                      <span className="product-price">{product.price}</span>
-                      <span className="product-stock">Stock: {product.stock}</span>
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <div key={product.id} className="product-card">
+                    <div className="product-image">
+                      <img src={product.image} alt={product.name} />
                     </div>
-                    <div className="product-actions">
-                      <button className="edit-btn" onClick={() => handleEditProduct(product)}>
-                        ✏️ Edit
-                      </button>
-                      <button className="delete-btn" onClick={() => handleDeleteProduct(product.id)}>
-                        🗑️ Delete
-                      </button>
+                    <div className="product-details">
+                      <h4>{product.name}</h4>
+                      <p className="product-category">{product.category}</p>
+                      <div className="product-meta">
+                        <span className="product-price">{product.price}</span>
+                        <span className="product-stock">Stock: {product.stock}</span>
+                      </div>
+                      <div className="product-actions">
+                        <button className="edit-btn" onClick={() => handleEditProduct(product)}>
+                          ✏️ Edit
+                        </button>
+                        <button className="delete-btn" onClick={() => handleDeleteProduct(product.id)}>
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="no-products">
+                  <span className="no-products-icon">📦</span>
+                  <h3>No products found</h3>
+                  <p>Try adjusting your search or category filter</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -296,14 +376,19 @@ const product = () => {
               </div>
 
               <div className="form-group">
-                <label>Category</label>
-                <input
-                  type="text"
+                <label>Category *</label>
+                <select
                   name="category"
-                  placeholder="Enter category (e.g., Electronics)"
+                  className="category-select"
                   value={formData.category}
                   onChange={handleInputChange}
-                />
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.filter(c => c !== 'All').map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="form-row">
